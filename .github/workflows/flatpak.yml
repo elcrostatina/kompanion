@@ -10,6 +10,11 @@ on:
 permissions:
   contents: read
 
+env:
+  APP_ID: io.github.elcrostatina.Kompanion
+  MANIFEST: io.github.elcrostatina.Kompanion.yml
+  FLATHUB_REPO: https://dl.flathub.org/repo/flathub.flatpakrepo
+
 jobs:
   build:
     name: Build ${{ matrix.arch }}
@@ -22,19 +27,43 @@ jobs:
             runner: ubuntu-24.04
           - arch: aarch64
             runner: ubuntu-24.04-arm
-    container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:kde-6.11
-      options: --privileged
     steps:
       - uses: actions/checkout@v4
-      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+
+      - name: Install Flatpak tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+
+      - name: Allow user namespaces for the build sandbox
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+
+      - name: Add Flathub
+        run: flatpak remote-add --user --if-not-exists flathub "$FLATHUB_REPO"
+
+      - name: Restore the runtime cache
+        uses: actions/cache@v4
         with:
-          bundle: kompanion-${{ matrix.arch }}.flatpak
-          manifest-path: io.github.elcrostatina.Kompanion.yml
-          arch: ${{ matrix.arch }}
-          cache-key: flatpak-builder-${{ matrix.arch }}-${{ github.sha }}
-          restore-cache: true
-          upload-artifact: false
+          path: ~/.local/share/flatpak
+          key: flatpak-runtimes-${{ matrix.arch }}-${{ hashFiles(env.MANIFEST) }}
+          restore-keys: flatpak-runtimes-${{ matrix.arch }}-
+
+      - name: Install the runtimes
+        run: |
+          runtime=$(sed -n "s/^runtime-version: '\(.*\)'/\1/p" "$MANIFEST")
+          flatpak install --user -y --noninteractive flathub \
+            org.kde.Platform//$runtime org.kde.Sdk//$runtime io.qt.qtwebengine.BaseApp//$runtime
+
+      - name: Build the application
+        run: |
+          flatpak-builder --user --force-clean --disable-rofiles-fuse \
+            --repo=repo --state-dir=.flatpak-builder build-dir "$MANIFEST"
+
+      - name: Create the bundle
+        run: |
+          flatpak build-bundle repo kompanion-${{ matrix.arch }}.flatpak "$APP_ID" master \
+            --runtime-repo="$FLATHUB_REPO"
+
       - uses: actions/upload-artifact@v4
         with:
           name: kompanion-${{ matrix.arch }}
