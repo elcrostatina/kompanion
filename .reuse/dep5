@@ -1,0 +1,7 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Kompanion
+Source: https://github.com/elcrostatina/kompanion
+
+Files: io.github.elcrostatina.Kompanion.desktop io.github.elcrostatina.Kompanion.yml .github/workflows/* data/overrides/* README.md RELEASING.md .gitignore
+Copyright: 2026 Kompanion contributors
+License: GPL-3.0-or-later

@@ -106,13 +106,14 @@ time toggles the panel (it is a single-instance application), so you can also bi
 LayerShellQt are built as modules). The GitHub Actions workflow in `.github/workflows/flatpak.yml` builds it for x86_64 and
 aarch64 on every push to `main`, on pull requests, on tags and on demand:
 
-* **Every run:** open the run in the *Actions* tab and download `kompanion-x86_64.flatpak` or `kompanion-aarch64.flatpak` from
-  the *Artifacts* section.
+* **Every run:** open the run in the *Actions* tab and download the `kompanion-x86_64` or `kompanion-aarch64` artifact (a zip that contains the
+  `.flatpak` bundle) from the *Artifacts* section.
 * **Tags:** pushing a tag such as `v0.1.0` also attaches both bundles to a GitHub release.
 
 Install a downloaded bundle with:
 
 ```bash
+unzip kompanion-x86_64.zip
 flatpak install --user ./kompanion-x86_64.flatpak
 flatpak run io.github.elcrostatina.Kompanion
 ```

@@ -64,13 +64,14 @@ The workflow file must already exist on the chosen branch, which is why the firs
 gh run list --workflow=flatpak.yml
 gh run watch
 gh run view --log-failed
-gh run download --name kompanion-x86_64.flatpak
+gh run download --name kompanion-x86_64
 ```
 
-Without the CLI: **Actions › the run › Artifacts** at the bottom of the page lists `kompanion-x86_64.flatpak` and
-`kompanion-aarch64.flatpak`. Install one with:
+Without the CLI: **Actions › the run › Artifacts** at the bottom of the page lists `kompanion-x86_64` and
+`kompanion-aarch64` (zip files that contain the `.flatpak` bundle). Install one with:
 
 ```bash
+unzip kompanion-x86_64.zip
 flatpak install --user ./kompanion-x86_64.flatpak
 flatpak run io.github.elcrostatina.Kompanion
 ```
