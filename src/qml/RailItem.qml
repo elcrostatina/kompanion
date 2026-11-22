@@ -15,6 +15,8 @@ QQC2.AbstractButton {
 
     property bool selected: false
     property bool expanded: false
+    property real labelReveal: expanded ? 1 : 0
+    property url faviconUrl
     property int discSize: Kirigami.Units.gridUnit * 2
     property int itemPadding: Kirigami.Units.smallSpacing
 
@@ -48,26 +50,21 @@ QQC2.AbstractButton {
             height: item.discSize
             name: item.name
             iconName: item.iconName
+            faviconUrl: item.faviconUrl
             selected: item.selected
             hovered: item.hovered
         }
 
         QQC2.Label {
             anchors.left: disc.right
-            anchors.leftMargin: Kirigami.Units.largeSpacing
+            anchors.leftMargin: Kirigami.Units.largeSpacing + (1 - item.labelReveal) * Kirigami.Units.largeSpacing
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             text: item.name
             elide: Text.ElideRight
             color: Kirigami.Theme.textColor
             font.bold: item.selected
-            opacity: item.expanded ? 1 : 0
-
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: Kirigami.Units.shortDuration
-                }
-            }
+            opacity: item.labelReveal
         }
     }
 }

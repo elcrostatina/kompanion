@@ -49,6 +49,7 @@ void ProviderEditor::remove(const QString &providerId)
     m_profileStorage.scheduleWipe(providerId);
     m_secrets.remove(SecretKeys::apiKeyFor(providerId), [](bool) {});
     m_registry.remove(providerId);
+    Q_EMIT providerRemoved(providerId);
 }
 
 void ProviderEditor::moveUp(const QString &providerId)

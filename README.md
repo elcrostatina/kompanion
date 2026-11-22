@@ -22,7 +22,7 @@ Panel
   warned if the shortcut is already taken. Slides in/out in 150 ms, **Esc** hides it.
 * Hiding never unloads pages, so conversations keep running.
 * Tray icon (show/hide, switch provider, quit), optional autostart, `kompanion --settings` opens the settings page.
-* Vertical sidebar rail with tinted rounded-tile provider buttons, grouped into Web and Local, a sliding highlight for the active provider and a button to expand it to show names (state remembered); switching providers and opening Settings use short slide-and-fade transitions; **Ctrl+1 … Ctrl+9** switch providers and the last used provider is remembered.
+* Vertical sidebar rail with rounded-tile provider buttons that show each site's favicon (taken from the page once you open it, or fetched from the site's `/favicon.ico`; providers without one get a tinted letter tile), grouped into Web and Local, a sliding highlight for the active provider and a button to expand it to show names (state remembered); switching providers and opening Settings use short slide-and-fade transitions; **Ctrl+1 … Ctrl+9** switch providers and the last used provider is remembered.
 
 Web providers
 * One persistent WebEngine profile per provider under `$XDG_DATA_HOME/kompanion/profiles/<id>/`: logins survive restarts

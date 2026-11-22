@@ -21,6 +21,7 @@ qt_add_executable(kompanion
     app/ChatController.cpp
     app/ChatControllerRegistry.cpp
     app/CodeBlockHighlighter.cpp
+    app/FaviconStore.cpp
     app/ProviderEditor.cpp
     app/PreferencesController.cpp
     app/TrayIcon.cpp

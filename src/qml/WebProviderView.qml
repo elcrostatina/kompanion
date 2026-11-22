@@ -12,6 +12,7 @@ Item {
     id: root
 
     required property var webProfile
+    required property var favicons
 
     property bool loadFailed: false
     property color pageColor: Kirigami.Theme.backgroundColor
@@ -216,6 +217,7 @@ Item {
                 if (loadingInfo.status === WebEngineView.LoadStartedStatus) {
                     root.loadFailed = false
                 } else if (loadingInfo.status === WebEngineView.LoadSucceededStatus) {
+                    root.favicons.capture(root.webProfile.providerId, webView.icon)
                     root.samplePageColor()
                     colorResampleTimer.restart()
                 } else if (loadingInfo.status === WebEngineView.LoadFailedStatus) {
@@ -223,6 +225,8 @@ Item {
                     root.loadFailed = !isHttpStatus && loadingInfo.errorCode !== root.abortedErrorCode
                 }
             }
+
+            onIconChanged: root.favicons.capture(root.webProfile.providerId, webView.icon)
 
             onPermissionRequested: permission => root.handlePermission(permission)
 

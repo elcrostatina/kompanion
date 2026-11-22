@@ -12,6 +12,8 @@ QQC2.AbstractButton {
     property bool accent: false
     property bool active: false
     property bool expanded: false
+    property real labelReveal: expanded ? 1 : 0
+    property real iconRotation: 0
     property int discSize: Kirigami.Units.gridUnit * 2
     property int itemPadding: Kirigami.Units.smallSpacing
 
@@ -78,6 +80,7 @@ QQC2.AbstractButton {
                 width: Kirigami.Units.iconSizes.smallMedium
                 height: width
                 source: button.iconName
+                rotation: button.iconRotation
                 color: button.filled ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.highlightColor
                 isMask: true
             }
@@ -85,19 +88,13 @@ QQC2.AbstractButton {
 
         QQC2.Label {
             anchors.left: tile.right
-            anchors.leftMargin: Kirigami.Units.largeSpacing
+            anchors.leftMargin: Kirigami.Units.largeSpacing + (1 - button.labelReveal) * Kirigami.Units.largeSpacing
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             text: button.text
             elide: Text.ElideRight
             font.bold: button.active
-            opacity: button.expanded ? 1 : 0
-
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: Kirigami.Units.shortDuration
-                }
-            }
+            opacity: button.labelReveal
         }
     }
 }

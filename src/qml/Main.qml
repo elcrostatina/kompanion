@@ -21,6 +21,7 @@ QQC2.ApplicationWindow {
     required property var allProviders
     required property var preferences
     required property var providerEditor
+    required property var favicons
 
     readonly property int maximumShortcutProviders: 9
 
@@ -167,6 +168,7 @@ QQC2.ApplicationWindow {
                                 providerSelection: window.providerSelection
                                 webProfiles: window.webProfiles
                                 chatControllers: window.chatControllers
+                                favicons: window.favicons
                             }
 
                             pushEnter: Transition {
@@ -228,6 +230,7 @@ QQC2.ApplicationWindow {
                 anchors.right: window.onRightEdge ? parent.right : undefined
                 anchors.margins: window.railMargin
                 providers: window.enabledProviders
+                favicons: window.favicons
                 currentId: window.providerSelection.currentId
                 currentIndex: window.providerSelection.currentIndex
                 expanded: window.preferences.sidebarExpanded

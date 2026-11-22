@@ -12,6 +12,7 @@ namespace {
 
 constexpr QLatin1StringView ProfilesFolder{"profiles"};
 constexpr QLatin1StringView OverridesFolder{"overrides"};
+constexpr QLatin1StringView FaviconsFolder{"favicons"};
 constexpr QLatin1StringView ChatDatabaseFileName{"chats.db"};
 
 QString applicationFolder(QStandardPaths::StandardLocation location)
@@ -29,6 +30,11 @@ QString AppPaths::profilesRoot()
 QString AppPaths::profileDirectory(const QString &providerId)
 {
     return QDir(profilesRoot()).filePath(providerId);
+}
+
+QString AppPaths::faviconsDirectory()
+{
+    return QDir(applicationFolder(QStandardPaths::GenericDataLocation)).filePath(QString(FaviconsFolder));
 }
 
 QString AppPaths::chatDatabaseFile()

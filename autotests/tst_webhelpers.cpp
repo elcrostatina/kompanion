@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Kompanion contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "core/AppIdentity.h"
 #include "core/Autostart.h"
 #include "core/FileNaming.h"
 #include "core/NavigationPolicy.h"
@@ -45,6 +46,7 @@ private Q_SLOTS:
     void scheduledWipeRemovesProfileOnApply();
     void unscheduledProfilesAreKept();
     void autostartWritesAndRemovesDesktopFile();
+    void dbusServiceNameEqualsTheApplicationId();
 };
 
 void TestWebHelpers::userAgentLosesEngineToken()
@@ -156,6 +158,14 @@ void TestWebHelpers::autostartWritesAndRemovesDesktopFile()
     QVERIFY(autostart.setEnabled(false));
     QVERIFY(!autostart.isEnabled());
     QVERIFY(autostart.setEnabled(false));
+}
+
+void TestWebHelpers::dbusServiceNameEqualsTheApplicationId()
+{
+    QStringList domainLabels = QString(AppIdentity::OrganizationDomain).split(QLatin1Char('.'));
+    std::reverse(domainLabels.begin(), domainLabels.end());
+    const QString serviceName = domainLabels.join(QLatin1Char('.')) + QLatin1Char('.') + QString(AppIdentity::DisplayName);
+    QCOMPARE(serviceName, QString(AppIdentity::ApplicationId));
 }
 
 QTEST_GUILESS_MAIN(TestWebHelpers)

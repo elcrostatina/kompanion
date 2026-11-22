@@ -22,3 +22,7 @@ kompanion_add_test(tst_chatcontroller
 )
 target_link_libraries(tst_chatcontroller PRIVATE Qt6::Qml)
 target_include_directories(tst_chatcontroller PRIVATE ${PROJECT_SOURCE_DIR}/src/app)
+
+kompanion_add_test(tst_faviconstore ${PROJECT_SOURCE_DIR}/src/app/FaviconStore.cpp)
+target_link_libraries(tst_faviconstore PRIVATE Qt6::Quick)
+target_include_directories(tst_faviconstore PRIVATE ${PROJECT_SOURCE_DIR}/src/app)

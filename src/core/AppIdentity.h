@@ -10,6 +10,7 @@ namespace AppIdentity {
 inline constexpr QLatin1StringView ApplicationId{"io.github.elcrostatina.Kompanion"};
 inline constexpr QLatin1StringView ApplicationName{"kompanion"};
 inline constexpr QLatin1StringView DisplayName{"Kompanion"};
+inline constexpr QLatin1StringView OrganizationDomain{"elcrostatina.github.io"};
 inline constexpr QLatin1StringView ConfigFileName{"kompanionrc"};
 inline constexpr QLatin1StringView QmlModuleUri{"io.github.elcrostatina.kompanion"};
 

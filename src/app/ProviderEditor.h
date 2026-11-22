@@ -52,6 +52,7 @@ public:
 Q_SIGNALS:
     void apiKeyChecked(const QString &providerId, bool present);
     void siteDataCleared(const QString &providerId);
+    void providerRemoved(const QString &providerId);
 
 private:
     void modify(const QString &providerId, const std::function<void(Provider &)> &change);

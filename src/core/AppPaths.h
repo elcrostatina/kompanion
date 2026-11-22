@@ -9,6 +9,7 @@ namespace AppPaths {
 
 QString profilesRoot();
 QString profileDirectory(const QString &providerId);
+QString faviconsDirectory();
 QString chatDatabaseFile();
 QString overridesDirectory();
 QString downloadsDirectory();

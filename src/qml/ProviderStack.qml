@@ -10,6 +10,7 @@ Item {
     required property var providers
     required property var webProfiles
     required property var chatControllers
+    required property var favicons
     required property string currentId
     required property int currentIndex
 
@@ -72,6 +73,7 @@ Item {
 
                 WebProviderView {
                     webProfile: stack.webProfiles.profileFor(page.providerId)
+                    favicons: stack.favicons
                 }
             }
 

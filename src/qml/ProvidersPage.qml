@@ -10,12 +10,14 @@ Item {
     required property var providerSelection
     required property var webProfiles
     required property var chatControllers
+    required property var favicons
 
     ProviderStack {
         anchors.fill: parent
         providers: page.providers
         webProfiles: page.webProfiles
         chatControllers: page.chatControllers
+        favicons: page.favicons
         currentId: page.providerSelection.currentId
         currentIndex: page.providerSelection.currentIndex
     }

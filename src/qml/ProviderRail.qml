@@ -10,12 +10,14 @@ Kirigami.ShadowedRectangle {
     id: rail
 
     required property var providers
+    required property var favicons
     required property string currentId
     required property int currentIndex
 
     property bool expanded: false
     property bool mirrored: false
     property bool settingsOpen: false
+    property real expandProgress: expanded ? 1 : 0
 
     readonly property int discSize: Kirigami.Units.gridUnit * 2
     readonly property int railPadding: Kirigami.Units.smallSpacing
@@ -23,6 +25,12 @@ Kirigami.ShadowedRectangle {
     readonly property int collapsedWidth: discSize + itemPadding * 2 + railPadding * 2
     readonly property int expandedWidth: Math.max(collapsedWidth, Math.min(Kirigami.Units.gridUnit * 11, (parent ? parent.width : width) * expandedWidthShare))
     readonly property int accentBarWidth: 3
+    readonly property int expandDurationMs: Kirigami.Units.longDuration * 1.4
+    readonly property int collapseDurationMs: Kirigami.Units.longDuration
+    readonly property real labelDelay: 0.25
+    readonly property real labelSpan: 0.5
+    readonly property real staggerStep: 0.03
+    readonly property real halfTurn: 180
     readonly property real borderAlpha: 0.14
     readonly property real shadowAlpha: 0.35
     readonly property real sectionOpacity: 0.55
@@ -38,26 +46,26 @@ Kirigami.ShadowedRectangle {
         return (kind === "web" ? i18n("Web") : i18n("Local")).toUpperCase()
     }
 
-    function expandIcon() {
-        const pointsOutward = expanded !== mirrored
-        return pointsOutward ? "go-previous" : "go-next"
+    function reveal(order) {
+        const progress = (expandProgress - labelDelay - order * staggerStep) / labelSpan
+        return Math.max(0, Math.min(1, progress))
     }
 
-    width: expanded ? expandedWidth : collapsedWidth
+    Behavior on expandProgress {
+        NumberAnimation {
+            duration: rail.expanded ? rail.expandDurationMs : rail.collapseDurationMs
+            easing.type: rail.expanded ? Easing.OutCubic : Easing.InOutCubic
+        }
+    }
+
+    width: collapsedWidth + (expandedWidth - collapsedWidth) * expandProgress
     radius: Kirigami.Units.cornerRadius * 2
     color: Kirigami.Theme.alternateBackgroundColor
     border.width: 1
     border.color: Qt.alpha(Kirigami.Theme.textColor, borderAlpha)
-    shadow.size: expanded ? Kirigami.Units.gridUnit : 0
+    shadow.size: Kirigami.Units.gridUnit * expandProgress
     shadow.color: Qt.rgba(0, 0, 0, shadowAlpha)
     clip: true
-
-    Behavior on width {
-        NumberAnimation {
-            duration: Kirigami.Units.longDuration
-            easing.type: Easing.OutCubic
-        }
-    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -82,18 +90,12 @@ Kirigami.ShadowedRectangle {
 
             QQC2.Label {
                 anchors.left: logo.right
-                anchors.leftMargin: Kirigami.Units.largeSpacing
+                anchors.leftMargin: Kirigami.Units.largeSpacing + (1 - opacity) * Kirigami.Units.largeSpacing
                 anchors.verticalCenter: parent.verticalCenter
                 text: "Kompanion"
                 font.bold: true
                 font.letterSpacing: 0.5
-                opacity: rail.expanded ? 1 : 0
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: Kirigami.Units.shortDuration
-                    }
-                }
+                opacity: rail.reveal(0)
             }
         }
 
@@ -112,18 +114,24 @@ Kirigami.ShadowedRectangle {
             highlightResizeDuration: 0
 
             section.property: "kind"
-            section.delegate: QQC2.Label {
+            section.delegate: Item {
+                id: sectionHeader
+
                 required property string section
 
                 width: list.width
-                topPadding: Kirigami.Units.smallSpacing
-                bottomPadding: Kirigami.Units.smallSpacing
-                leftPadding: rail.expanded ? rail.itemPadding : 0
-                horizontalAlignment: rail.expanded ? Text.AlignLeft : Text.AlignHCenter
-                text: rail.sectionTitle(section)
-                font.pointSize: Kirigami.Theme.smallFont.pointSize
-                font.letterSpacing: rail.sectionSpacing
-                opacity: rail.sectionOpacity
+                height: sectionLabel.implicitHeight + Kirigami.Units.smallSpacing * 2
+
+                QQC2.Label {
+                    id: sectionLabel
+
+                    x: (sectionHeader.width - width) / 2 * (1 - rail.expandProgress) + rail.itemPadding * rail.expandProgress
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: rail.sectionTitle(sectionHeader.section)
+                    font.pointSize: Kirigami.Theme.smallFont.pointSize
+                    font.letterSpacing: rail.sectionSpacing
+                    opacity: rail.sectionOpacity
+                }
             }
 
             QQC2.ScrollBar.vertical: QQC2.ScrollBar {
@@ -155,6 +163,11 @@ Kirigami.ShadowedRectangle {
             delegate: RailItem {
                 selected: providerId === rail.currentId
                 expanded: rail.expanded
+                labelReveal: rail.reveal(index + 1)
+                faviconUrl: {
+                    rail.favicons.revision
+                    return rail.favicons.urlFor(providerId)
+                }
                 discSize: rail.discSize
                 itemPadding: rail.itemPadding
                 onClicked: rail.providerSelected(providerId)
@@ -165,9 +178,11 @@ Kirigami.ShadowedRectangle {
             Layout.fillWidth: true
             accent: true
             expanded: rail.expanded
+            labelReveal: rail.reveal(list.count + 1)
+            iconRotation: (rail.mirrored ? rail.halfTurn : 0) + rail.halfTurn * rail.expandProgress
             discSize: rail.discSize
             itemPadding: rail.itemPadding
-            iconName: rail.expandIcon()
+            iconName: "go-next"
             text: rail.expanded ? i18n("Collapse") : i18n("Expand")
             onClicked: rail.expandToggled()
         }
@@ -176,6 +191,7 @@ Kirigami.ShadowedRectangle {
             Layout.fillWidth: true
             active: rail.settingsOpen
             expanded: rail.expanded
+            labelReveal: rail.reveal(list.count + 2)
             discSize: rail.discSize
             itemPadding: rail.itemPadding
             iconName: "configure"

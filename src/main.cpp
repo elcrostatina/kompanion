@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "app/ChatControllerRegistry.h"
+#include "app/FaviconStore.h"
 #include "app/KeychainSecretStore.h"
 #include "app/PanelController.h"
 #include "app/PanelDocking.h"
@@ -71,7 +72,8 @@ void prepareGraphicsEnvironment()
 
 void configureApplicationIdentity(QApplication &application)
 {
-    application.setApplicationName(QString(AppIdentity::ApplicationName));
+    application.setApplicationName(QString(AppIdentity::DisplayName));
+    application.setOrganizationDomain(QString(AppIdentity::OrganizationDomain));
     application.setApplicationDisplayName(QString(AppIdentity::DisplayName));
     application.setDesktopFileName(QString(AppIdentity::ApplicationId));
     application.setQuitOnLastWindowClosed(false);
@@ -99,7 +101,8 @@ QVariantMap qmlInitialProperties(PanelController &panel,
                                  ChatControllerRegistry &chatControllers,
                                  ProviderModel &allProviders,
                                  PreferencesController &preferences,
-                                 ProviderEditor &providerEditor)
+                                 ProviderEditor &providerEditor,
+                                 FaviconStore &favicons)
 {
     return {
         {QStringLiteral("panel"), QVariant::fromValue(&panel)},
@@ -110,6 +113,7 @@ QVariantMap qmlInitialProperties(PanelController &panel,
         {QStringLiteral("allProviders"), QVariant::fromValue(&allProviders)},
         {QStringLiteral("preferences"), QVariant::fromValue(&preferences)},
         {QStringLiteral("providerEditor"), QVariant::fromValue(&providerEditor)},
+        {QStringLiteral("favicons"), QVariant::fromValue(&favicons)},
     };
 }
 
@@ -120,6 +124,16 @@ QQuickWindow *loadPanelWindow(QQmlApplicationEngine &engine, const QVariantMap &
     engine.setInitialProperties(initialProperties);
     engine.loadFromModule(AppIdentity::QmlModuleUri, MainQmlType);
     return engine.rootObjects().isEmpty() ? nullptr : qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst());
+}
+
+void fetchMissingFavicons(const ProviderRegistry &providers, FaviconStore &favicons)
+{
+    const QList<Provider> all = providers.providers();
+    for (const Provider &provider : all) {
+        if (provider.kind == ProviderKind::Web) {
+            favicons.fetchIfMissing(provider.id, provider.url);
+        }
+    }
 }
 
 QString shortcutConflictMessage(const QString &shortcutText)
@@ -193,7 +207,13 @@ int main(int argc, char *argv[])
     TrayIcon trayIcon(panel, providers, selection);
 
     QQmlApplicationEngine engine;
-    QQuickWindow *window = loadPanelWindow(engine, qmlInitialProperties(panel, enabledProviders, selection, webProfiles, chatControllers, allProviders, preferences, providerEditor));
+    FaviconStore favicons(engine, network, AppPaths::faviconsDirectory());
+    fetchMissingFavicons(providers, favicons);
+    QObject::connect(&providers, &ProviderRegistry::providersChanged, &favicons, [&providers, &favicons] {
+        fetchMissingFavicons(providers, favicons);
+    });
+    QObject::connect(&providerEditor, &ProviderEditor::providerRemoved, &favicons, &FaviconStore::remove);
+    QQuickWindow *window = loadPanelWindow(engine, qmlInitialProperties(panel, enabledProviders, selection, webProfiles, chatControllers, allProviders, preferences, providerEditor, favicons));
     if (!window) {
         return StartupFailure;
     }
