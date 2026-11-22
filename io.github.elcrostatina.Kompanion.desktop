@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=Application
+Name=Kompanion
+GenericName=AI Chat Sidebar
+Comment=AI chat sidebar docked to a screen edge
+Exec=kompanion
+Icon=io.github.elcrostatina.Kompanion
+Terminal=false
+Categories=Qt;KDE;Utility;
+Keywords=AI;Chat;Assistant;Sidebar;LLM;
+StartupNotify=false
+X-DBUS-StartupType=Unique
+X-KDE-StartupNotify=false
+Actions=Settings;
+
+[Desktop Action Settings]
+Name=Settings
+Exec=kompanion --settings
+Icon=configure

@@ -1,0 +1,12 @@
+/* Kompanion override for custom web providers. Edit freely; changes apply when you save. */
+
+/* Layout: keep content inside the narrow panel */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden !important;
+}
+
+/* Media and code never wider than the panel */
+img, video, canvas, svg, pre, table {
+  max-width: 100% !important;
+}

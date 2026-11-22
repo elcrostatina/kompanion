@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Kompanion contributors -->
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<component type="desktop-application">
+  <id>io.github.elcrostatina.Kompanion</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Kompanion</name>
+  <summary>AI chat sidebar for KDE Plasma</summary>
+  <description>
+    <p>Kompanion is a chat sidebar docked to the left or right edge of the screen. It brings the web apps of AI services and local OpenAI-compatible models together in one panel.</p>
+    <p>No telemetry. Nothing is sent anywhere except to the providers you configure.</p>
+  </description>
+  <launchable type="desktop-id">io.github.elcrostatina.Kompanion.desktop</launchable>
+  <provides>
+    <binary>kompanion</binary>
+  </provides>
+  <categories>
+    <category>Utility</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.1.0" date="2026-11-21"/>
+  </releases>
+</component>

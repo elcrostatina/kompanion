@@ -1,0 +1,15 @@
+// SPDX-FileCopyrightText: 2026 Kompanion contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
+
+#include "core/Provider.h"
+
+#include <QList>
+
+namespace ProviderPresets {
+
+QList<Provider> defaults();
+QStringList idsFromFirstRelease();
+
+}
