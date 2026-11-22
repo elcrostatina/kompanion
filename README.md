@@ -128,6 +128,8 @@ Inside the sandbox the settings and override files live under `~/.var/app/io.git
 and the “Autostart” switch cannot write to the host's autostart folder (use the desktop's own autostart settings instead).
 Use `-DKOMPANION_BUILD_TESTS=OFF` to skip the unit tests in a regular CMake build.
 
+See [RELEASING.md](RELEASING.md) for how to commit, trigger the pipeline by hand and publish a release.
+
 ## Style overrides
 
 Every web provider reads two optional files from `$XDG_CONFIG_HOME/kompanion/overrides/` (usually `~/.config/kompanion/overrides/`):
