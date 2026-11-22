@@ -103,5 +103,9 @@ Look at it with `gh release view vx.y.z`. To redo a release, delete the release 
   only. Remove the `aarch64` entry from `strategy.matrix.include` in the workflow for a private repository.
 * **The release job fails with a permission error:** allow workflows to write in *Settings › Actions › General › Workflow
   permissions*, or keep the default and rely on the `contents: write` permission already set on that job.
+* **`Invalid cross-device link` while updating `org.kde.Sdk`:** this happened when the workflow ran inside the
+  `flatpak-github-actions` container, where Flatpak cannot update runtimes that are already part of the image. The workflow now
+  runs on the plain runner, installs the runtimes itself and builds with `flatpak-builder`, so the problem should not come back. If a run
+  still fails on the runtime step, delete the cache in *Actions › Caches* and start a new run (not a re-run).
 * **The Flatpak build fails on a module:** the log (`gh run view --log-failed`) names it. LayerShellQt and QtKeychain are pinned to
   a tag and a commit in the manifest; change both together when updating them.
